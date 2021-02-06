@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" integrity="sha512-PgQMlq+nqFLV4ylk1gwUOgm6CtIIXkKwaIHp/PAIWHzig/lKZSEGKEysh0TCVbHJXCLN7WetD8TFecIky75ZfQ==" crossorigin="anonymous" />
+    <title>Document</title>
+</head>
+<body>
+    <div class="main">
+        <form action="" class="tempform">
+                <input type="text" id="cityname" placeholder="Enter your City here"  autocomplete="off">
+                <input type="submit" value="Search" id="submitbtn">
+        </form>
+    </div>
+    <div class="box">
+        <div class="fore">
+            <h4>Weather Forecast</h4>
+        </div>
+        <div id="forecast">
+            <i class='fas fa-sun' style='color:white;' id='fa'></i>
+        </div>
+
+        <div class="city">
+            <p id="ctyn"></p>
+
+        </div>
+        <div class="date_time">
+            <p id="date">Wed | OCT 23 | 2:00 PM</p>
+        </div>
+        <div class="temp">
+            <p id="te">0 deg</p>
+            <p id="realt"></p>
+        </div>
+
+
+    </div>
+
+    <script>
+         const tit=document.getElementById("forecast");
+        const temperature=document.getElementById("te");
+        const ctyn=document.getElementById("ctyn");
+        const cityname=document.getElementById("cityname");
+            const btn=document.getElementById("submitbtn");
+            const callthis=async(e)=>{
+                e.preventDefault();
+                let cityval=cityname.value;
+                if(cityval===""){
+                    ctyn.innerText="Enter city";
+                }
+                else{
+                    try{
+                    let url=`https://api.openweathermap.org/data/2.5/weather?q=${cityval}&appid=0bab15ebbe7d859e1344332d7263a57e`;
+                    const response=await fetch(url);
+                    const data=await response.json();
+                    const ardata=[data];
+                    ctyn.innerText=ardata[0].name + ' , '+ ardata[0].sys.country ;
+                    const datat=ardata[0].main.temp-273.15;
+                    temperature.innerText= datat.toFixed(2)+" deg" ;
+                    const status=ardata[0].weather[0].main;
+                    console.log(status);
+                    if(status==="Clear")
+                    tit.innerHTML="<i class='fas fa-cloud-sun' id='fa'></i>";
+                    else if(status==="Sunny")
+                    tit.innerHTML="<i class='fas fa-sun'  id='fa'></i>";
+                    else if(status==="Clouds")
+                    tit.innerHTML="<i class='fas fa-cloud-showers-heavy' id='fa'></i>"
+                    else if(status==="Haze")
+                     tit.innerHTML="<i class='fas fa-radiation-alt' id='fa'></i>"
+                     else if(status==="Smoke")
+                     tit.innerHTML="<i class='fas fa-smog' id='fa'></i>"
+
+
+                    }
+                    catch{
+                        ctyn.innerText="City Invalid.."
+                        temperature.innerText=0 +" deg";
+                    }
+                }
+
+
+            }
+            btn.addEventListener("click",callthis);
+            const box=document.getElementsByClassName("box");
+
+            let dat=document.getElementById("date");
+                var weekday=[];
+                weekday[0]="Mon";
+                weekday[1]="Tue";
+                weekday[2]="Wed";
+                weekday[3]="Thu";
+                weekday[4]="Fri";
+                weekday[5]="Sat";
+                weekday[6]="Sun";
+
+
+                let currenttime= new Date();
+
+                 var month=[];
+                month[0]="Jan";
+                 month[1]="Feb";
+                 month[2]="Mar";
+                 month[3]="April";
+                 month[4]="May";
+                month[5]="June";
+                 month[6]="July";
+                 month[7]="Aug";
+                 month[8]="Sept";
+                 month[9]="Oct";
+                 month[10]="Nov";
+                 month[11]="Dec";
+
+                let cut=new Date();
+                 var curmon=cut.getMonth();
+                 var curdate=cut.getDate();
+
+    
+                let period="AM";
+
+                let hour=cut.getHours();
+                let min=cut.getMinutes();
+                if(hour>11){
+                period="PM";
+                 }
+                if(hour>12)
+                hour=hour-12;
+                if(min<10)
+                min='0'+min;
+
+                var time=hour +":"+min +" "+ period; 
+
+                dat.innerHTML=weekday[currenttime.getDay()-1] +" | "+ month[curmon] +" "+ curdate +" | "+time;
+
+
+    </script>
+    
+</body>
+</html>
+
+<style>
+
+*{
+    margin: 0px;
+    padding: 0px;
+    box-sizing: border-box;
+}
+
+body{
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    overflow: hidden;
+}
+.tempform{
+    width: 40%;
+    position: relative;
+    margin: 2px auto;
+}
+.tempform input[type="text"]{
+    width: 100%;
+    padding: 1rem 1rem 1rem 1rem;
+    background: #1e202b;
+    color: white;
+    outline: none;
+    border: none;
+    font-size: 1.3rem;
+    border-radius: 3rem;
+    
+}
+.tempform input[type="submit"]{
+    position: absolute;
+    padding: 7px;
+    top: 5px;
+    right: 5px;
+    bottom: 5px;
+    border: none;
+    background: #009ad8;
+    border-radius: 2rem;
+    color: white;
+    font-size: 1.2rem;
+}
+
+
+.box{
+    margin: auto;
+    min-height: 430px;
+    width: 300px;
+    background-image: linear-gradient(to top,rgba(0, 0, 0,1),rgba(0, 0, 0,0.9));
+}
+
+
+.fore{
+    text-align: center;
+    padding: 10px;
+    font-size: 30px;
+    color: white;
+    font-style: italic;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+    margin-top: 15px;
+    margin-bottom: 10px;
+
+}
+
+
+#forecast{
+    padding: 30px;
+}
+#forecast #fa{
+    display: flex;
+    color: white;
+    justify-content: center;
+    font-size: 70px;
+    margin-top: 10px;
+    animation: fas 2s linear infinite alternate;
+}
+@keyframes fas{
+    from{
+        transform: scale(1.1);
+    }
+    to{
+        transform: scale(1.3);
+    }
+}
+.city{
+    padding: 20px;
+    text-align: center;
+    font-style: italic;
+    font-family: cursive;
+    font-size: 30px;
+    color: white;
+    
+
+}
+.date_time{
+    text-align: center;
+    font-style: oblique;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin-top: -30px;
+    padding: 20px;
+    color: white;
+
+
+}
+.temp{
+    padding: 20px;
+    text-align: center;
+}
+#te{
+    font-size: 40px;
+    margin-top: -20px;
+    font-family: fantasy;
+    color: white;
+}
+#realt{
+    font-size: smaller;
+    font-family: monospace;
+    color: white;
+}
+    
+
+</style>
